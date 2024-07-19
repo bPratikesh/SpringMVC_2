@@ -2,6 +2,7 @@ package com.example.SpringMVCweek2.SpringMVC.controllers;
 
 import com.example.SpringMVCweek2.SpringMVC.dto.EmployeeDTO;
 import com.example.SpringMVCweek2.SpringMVC.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,13 +42,13 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO inputInfoOfEmployee){
+    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody @Valid EmployeeDTO inputInfoOfEmployee){
         EmployeeDTO savedEmp = employeeService.createEmp(inputInfoOfEmployee);
         return new ResponseEntity<>(savedEmp, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{empId}")
-    public ResponseEntity<EmployeeDTO> updateEmployeeById(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long empId){
+    public ResponseEntity<EmployeeDTO> updateEmployeeById(@RequestBody @Valid EmployeeDTO employeeDTO, @PathVariable Long empId){
         return ResponseEntity.ok(employeeService.updateEmployeeById(empId, employeeDTO));
     }
 
