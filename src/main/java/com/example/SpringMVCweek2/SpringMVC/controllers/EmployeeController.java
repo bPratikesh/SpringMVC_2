@@ -1,6 +1,7 @@
 package com.example.SpringMVCweek2.SpringMVC.controllers;
 
 import com.example.SpringMVCweek2.SpringMVC.dto.EmployeeDTO;
+import com.example.SpringMVCweek2.SpringMVC.exception.ResourceNotFoundException;
 import com.example.SpringMVCweek2.SpringMVC.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,6 @@ import java.util.Optional;
 @RequestMapping(path = "/emp")
 public class EmployeeController {
 
-//    @GetMapping(path = "/msg")
-//    public String secretMsg(){
-//        return "Hey, How are you?";
-//    }
 
     private final EmployeeService employeeService;
 
@@ -29,23 +26,18 @@ public class EmployeeController {
     }
 
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> empNotFound(NoSuchElementException exception){
-        return new ResponseEntity<>("Employee Not Found!!", HttpStatus.NOT_FOUND);
-    }
-
     @GetMapping(path = "/{empId}")
     public ResponseEntity<EmployeeDTO> getEmpById(@PathVariable Long empId){
         Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(empId);
         return employeeDTO
                 .map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
-                .orElseThrow(() -> new NoSuchElementException());
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: "+empId));
     }
 
     @GetMapping
     public ResponseEntity<List<EmployeeDTO>> getAllEmployees(@RequestParam(required = false, name = "inputAge") Integer age,
                                              @RequestParam(required = false) String sortBy){
-        return ResponseEntity.ok(employeeService.getAllEmployees());
+           return ResponseEntity.ok(employeeService.getAllEmployees());
     }
 
     @PostMapping
